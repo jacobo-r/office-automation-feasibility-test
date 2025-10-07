@@ -1,7 +1,3 @@
-Here’s your README-ready formatted version, cleanly structured in Markdown so you can copy-paste it directly into a file:
-
-⸻
-
 UNO Export & Send – Feasibility Test
 
 How to Run (Quick Instructions)
@@ -87,7 +83,3 @@ Optional Next Steps
 If you’d like, I can provide:
 	•	A tiny Node or Python test server that accepts the WebSocket binary (for local testing), or
 	•	A .bat launcher that starts OpenOffice with the --accept flag and runs this script automatically.
-
-⸻
-
-Would you like me to generate that .bat launcher next so you can test it in one double-click?
