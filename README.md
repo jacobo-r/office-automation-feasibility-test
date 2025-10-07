@@ -1,10 +1,3 @@
-Windows-ready feasibility script:
-	•	Connects to the UNO socket (OpenOffice / LibreOffice) on localhost,
-	•	Grabs the currently active document,
-	•	Exports it to a temporary PDF using the suite’s own PDF exporter,
-	•	Sends the PDF either over WebSocket (binary) or HTTPS (multipart/form-data), depending on the CLI argument you pass.
-
-I kept it intentionally minimal and defensive so you can run it quickly and iterate.
 
 ⸻
 
