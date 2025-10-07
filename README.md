@@ -1,15 +1,13 @@
-# UNO Export & Send – Feasibility Test
+UNO Export & Send – Feasibility Test
 
-## How to Run (Quick Instructions)
+How to Run (Quick Instructions)
+	1.	Make sure OpenOffice (or LibreOffice) on the Windows test machine is running with the UNO listener enabled:
 
-1. **Make sure OpenOffice (or LibreOffice) on the Windows test machine is running with the UNO listener enabled:**
+REM If OpenOffice:
+"C:\Program Files (x86)\OpenOffice 4\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
 
-   ```cmd
-   REM If OpenOffice:
-   "C:\Program Files (x86)\OpenOffice 4\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
-
-   REM Or if LibreOffice:
-   "C:\Program Files\LibreOffice\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
+REM Or if LibreOffice:
+"C:\Program Files\LibreOffice\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
 
 	2.	Use the Office-provided Python binary (recommended) so pyuno is available. Example path:
 
@@ -57,6 +55,7 @@ Note:
 Notes, Tips, and Next Steps
 	•	Run this with the Office Python (the one inside .../program/python.exe) — that guarantees pyuno is available.
 	•	Install dependencies:
+
 For WebSocket:
 
 "C:\Program Files (x86)\OpenOffice 4\program\python.exe" -m pip install websocket-client
@@ -64,7 +63,6 @@ For WebSocket:
 For HTTPS:
 
 "C:\Program Files (x86)\OpenOffice 4\program\python.exe" -m pip install requests
-
 
 	•	If you prefer not to install packages into the Office Python, you can run the script with a system Python, but you’ll need to ensure pyuno is importable — the easiest path is still to use the Office Python.
 	•	The script tries to store the document silently.
@@ -86,3 +84,5 @@ If you’d like, I can provide:
 	•	A .bat launcher that starts OpenOffice with the --accept flag and runs this script automatically.
 
 ⸻
+
+✅ Copy everything above into your README.md — it will render perfectly in any Markdown environment.
