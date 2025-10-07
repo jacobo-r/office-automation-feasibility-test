@@ -1,14 +1,15 @@
-UNO Export & Send – Feasibility Test
+# UNO Export & Send – Feasibility Test
 
-How to Run (Quick Instructions)
-	1.	Make sure OpenOffice (or LibreOffice) on the Windows test machine is running with the UNO listener enabled:
+## How to Run (Quick Instructions)
 
-REM If OpenOffice:
-"C:\Program Files (x86)\OpenOffice 4\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
+1. **Make sure OpenOffice (or LibreOffice) on the Windows test machine is running with the UNO listener enabled:**
 
-REM Or if LibreOffice:
-"C:\Program Files\LibreOffice\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
+   ```cmd
+   REM If OpenOffice:
+   "C:\Program Files (x86)\OpenOffice 4\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
 
+   REM Or if LibreOffice:
+   "C:\Program Files\LibreOffice\program\soffice.exe" --accept="socket,host=127.0.0.1,port=2002;urp;" --norestore
 
 	2.	Use the Office-provided Python binary (recommended) so pyuno is available. Example path:
 
@@ -49,7 +50,7 @@ Note:
   Run with your Office Python (OpenOffice/LibreOffice python) so pyuno is available.
 """
 
-(Insert the full script contents here)
+(Insert the full script contents here.)
 
 ⸻
 
@@ -83,3 +84,5 @@ Optional Next Steps
 If you’d like, I can provide:
 	•	A tiny Node or Python test server that accepts the WebSocket binary (for local testing), or
 	•	A .bat launcher that starts OpenOffice with the --accept flag and runs this script automatically.
+
+⸻
