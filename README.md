@@ -1,4 +1,4 @@
-Nice — here’s a small, Windows-ready feasibility script that:
+Windows-ready feasibility script:
 	•	Connects to the UNO socket (OpenOffice / LibreOffice) on localhost,
 	•	Grabs the currently active document,
 	•	Exports it to a temporary PDF using the suite’s own PDF exporter,
