@@ -66,10 +66,13 @@ Sub ExportAndSendPDF()
     args(0) = Prop("FilterName", filterName)
     doc.storeToURL pdfUrl, args()
 
-    ' === Build final command for CMD ===
-    Dim batPath$
+    ' === Launch external sender batch ===
+    Dim batPath$, cmd$
     batPath = BASE_PATH & "\send_ws.bat"
-    Shell Quote(batPath), 1
+
+    cmd = "cmd /c """ & batPath & """"
+
+    Shell cmd, 1
 
     MsgBox "Exported and sending: " & pdfPath, 64, "Done"
     Exit Sub
