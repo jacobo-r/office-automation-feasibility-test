@@ -70,8 +70,7 @@ Sub ExportAndSendPDF()
     Dim batPath$, cmd$
     batPath = BASE_PATH & "\send_ws.bat"
 
-    cmd = "cmd /c """ & batPath & """"
-
+    cmd = "cmd /k """ & batPath & """"
     Shell cmd, 1
 
     MsgBox "Exported and sending: " & pdfPath, 64, "Done"
