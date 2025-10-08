@@ -3,8 +3,6 @@ Option Explicit
 ' === CONFIGURATION ===
 Const BASE_PATH = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasibility-test-main"
 Const PDF_EXPORT_DIR = BASE_PATH & "\temp_pdf"
-Const PYTHON_EXE = "C:\Users\Administrador\AppData\Local\Programs\Python\Python314\python.exe"
-Const WS_URL = "ws://127.0.0.1:9000"
 ' ======================
 
 Private Function Prop(ByVal n$, ByVal v As Variant) As com.sun.star.beans.PropertyValue
@@ -31,25 +29,22 @@ Private Sub EnsureFolder(path$)
     On Error GoTo 0
 End Sub
 
-Private Function Quote$(ByVal s$)
-    Quote = """" & s & """"
-End Function
-
 ' === MAIN ROUTINE ===
-Sub ExportAndSendPDF()
+Sub ExportPDFToFolder()
     On Error GoTo Oops
 
+    ' Ensure there’s an open document
     Dim doc As Object
     doc = ThisComponent
     If IsNull(doc) Then
-        MsgBox "No active document.", 48, "Export PDF"
+        MsgBox "No active document found.", 48, "Export PDF"
         Exit Sub
     End If
 
     ' Ensure export folder exists
     Call EnsureFolder(PDF_EXPORT_DIR)
 
-    ' Choose export filter
+    ' Choose export filter based on document type
     Dim filterName$
     If doc.supportsService("com.sun.star.sheet.SpreadsheetDocument") Then
         filterName = "calc_pdf_Export"
@@ -57,27 +52,18 @@ Sub ExportAndSendPDF()
         filterName = "writer_pdf_Export"
     End If
 
-    ' Build PDF path
+    ' Build file name
     Dim pdfPath$, pdfUrl$
     pdfPath = PDF_EXPORT_DIR & "\" & SafeTitle(doc.Title) & "_" & NowStamp() & ".pdf"
     pdfUrl = ConvertToURL(pdfPath)
 
+    ' Export PDF
     Dim args(0) As New com.sun.star.beans.PropertyValue
     args(0) = Prop("FilterName", filterName)
     doc.storeToURL pdfUrl, args()
 
-    ' === Launch external sender batch ===
-    Dim batPath$, cmd$
-    batPath = BASE_PATH & "\send_ws.bat"
-
-    cmd = "cmd /k """ & batPath & """"
-        
-    MsgBox "Launching batch file: " & batPath
-    MsgBox "Command: cmd /k """ & batPath & """"
-    
-    Shell cmd, 1
-
-    MsgBox "Exported and sending: " & pdfPath, 64, "Done"
+    ' Notify success
+    MsgBox "PDF exported to: " & pdfPath, 64, "Done"
     Exit Sub
 
 Oops:
