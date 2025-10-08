@@ -11,6 +11,8 @@ async def handle(ws):
         data = await ws.recv()
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         file_path = os.path.join(SAVE_DIR, f"received_{ts}.pdf")
+
+        file_path = os.path.normpath(file_path).replace("\\", "/")
         with open(file_path, "wb") as f:
             f.write(data)
         print(f"Saved {file_path} ({len(data)} bytes)")
