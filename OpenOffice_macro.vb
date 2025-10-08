@@ -68,8 +68,13 @@ Sub ExportAndSendPDF()
     ' === Debug: show command before running (optional)
     ' MsgBox "Running: " & cmd
 
-    ' === Execute silently ===
-    Shell cmd, 0
+    ' === Execute with visible console & logging ===
+    Dim logPath$
+    logPath = BASE_PATH & "\ws_send_log_from_macro.txt"
+
+    cmd = "cmd /k ""cd /d """ & BASE_PATH & """ && """ & PYTHON_EXE & """ ws_send_pdf.py """ & WS_URL & """ """ & PDF_EXPORT_DIR & """ >> """ & logPath & """ 2>&1"""
+
+    Shell cmd, 1  ' 1 = show console window (so you can see any errors)
 
     MsgBox "Exported and sent: " & pdfPath, 64, "Done"
     Exit Sub
