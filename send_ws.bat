@@ -14,7 +14,7 @@ echo [%date% %time%] Current directory: %CD% >> "%TRACEFILE%"
 
 REM --- Quick sanity test: can Python even start?
 echo [%date% %time%] Testing Python startup... >> "%TRACEFILE%"
-"%PYTHON%" -c "import sys; print('Hello from', sys.executable)" >> "%TRACEFILE%" 2>&1
+powershell -Command "Start-Process '%PYTHON%' -ArgumentList '-c \"import sys; print(\'Hello from\', sys.executable)\"' -Verb RunAs" >> "%TRACEFILE%" 2>&1
 echo [%date% %time%] Test exit code: %ERRORLEVEL% >> "%TRACEFILE%"
 
 REM --- Record Python version (useful for path mismatches)
