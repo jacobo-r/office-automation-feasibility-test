@@ -71,6 +71,10 @@ Sub ExportAndSendPDF()
     batPath = BASE_PATH & "\send_ws.bat"
 
     cmd = "cmd /k """ & batPath & """"
+        
+    MsgBox "Launching batch file: " & batPath
+    MsgBox "Command: cmd /k """ & batPath & """"
+    
     Shell cmd, 1
 
     MsgBox "Exported and sending: " & pdfPath, 64, "Done"
