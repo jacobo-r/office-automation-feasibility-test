@@ -2,7 +2,7 @@ import asyncio, websockets, os, datetime
 
 # this piece of code simualtes the websocket server in the backend
 
-SAVE_DIR = "./ws_received"  # folder where incoming PDFs will be saved
+SAVE_DIR = "./ws_received_from_macro"  # folder where incoming PDFs will be saved
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 async def handle(ws):
