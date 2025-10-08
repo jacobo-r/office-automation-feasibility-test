@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
 ws_send_pdf.py
-Send a PDF file to a WebSocket server using the `websockets` library (asyncio).
+Automatically send all PDF files in temp_pdf folder to a WebSocket server,
+then delete each file after successful transmission.
+
 Usage:
-  python ws_send_pdf.py ws://127.0.0.1:9000 path/to/file.pdf
+  python ws_send_pdf.py ws://127.0.0.1:9000 D:\path\to\temp_pdf
 """
 
 import sys
@@ -20,38 +22,49 @@ def log(msg: str):
         f.write(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {msg}\n")
 
 async def send_file(ws_url: str, pdf_path: str):
-    if not os.path.exists(pdf_path):
-        log(f"ERROR: File not found -> {pdf_path}")
-        return
-
     try:
-        log(f"Connecting to {ws_url} ...")
         async with websockets.connect(ws_url, max_size=None) as ws:
-            log(f"Connected. Sending file: {pdf_path}")
             with open(pdf_path, "rb") as f:
                 data = f.read()
             await ws.send(data)
-            log(f"Sent {len(data)} bytes")
+            log(f"Sent {os.path.basename(pdf_path)} ({len(data)} bytes)")
 
-            # Optionally wait for confirmation (depends on your server)
             try:
                 reply = await asyncio.wait_for(ws.recv(), timeout=3)
                 log(f"Server replied: {reply}")
             except asyncio.TimeoutError:
                 log("No reply from server (timeout)")
 
-        log("WebSocket connection closed normally.")
+        os.remove(pdf_path)
+        log(f"Deleted local file: {pdf_path}")
 
     except Exception as e:
-        log(f"ERROR sending file: {e}")
+        log(f"ERROR sending {pdf_path}: {e}")
 
 async def main():
     if len(sys.argv) < 3:
-        log("Usage: python ws_send_pdf.py <ws_url> <pdf_path>")
+        log("Usage: python ws_send_pdf.py <ws_url> <folder_path>")
         return
+
     ws_url = sys.argv[1]
-    pdf_path = sys.argv[2]
-    await send_file(ws_url, pdf_path)
+    folder = sys.argv[2]
+
+    if not os.path.isdir(folder):
+        log(f"ERROR: Folder not found: {folder}")
+        return
+
+    pdf_files = [f for f in os.listdir(folder) if f.lower().endswith(".pdf")]
+    if not pdf_files:
+        log(f"No PDFs to send in {folder}")
+        return
+
+    log(f"Found {len(pdf_files)} PDFs in {folder}")
+
+    for fname in pdf_files:
+        pdf_path = os.path.join(folder, fname)
+        await send_file(ws_url, pdf_path)
+
+    log("All pending PDFs processed.")
 
 if __name__ == "__main__":
     asyncio.run(main())
