@@ -3,7 +3,7 @@ Option Explicit
 ' === CONFIGURATION ===
 Const BASE_PATH = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasibility-test-main"
 Const PDF_EXPORT_DIR = BASE_PATH & "\temp_pdf"
-Const PYTHON_EXE = "C:\Users\Administrador\AppData\Local\Programs\Python\Python312\python.exe"
+Const PYTHON_EXE = "C:\Users\Administrador\AppData\Local\Programs\Python\Python314\python.exe"
 Const WS_URL = "ws://127.0.0.1:9000"
 ' ======================
 
