@@ -1,70 +1,31 @@
-#!/usr/bin/env python3
-"""
-ws_send_pdf.py
-Automatically send all PDF files in temp_pdf folder to a WebSocket server,
-then delete each file after successful transmission.
+import asyncio, websockets, os, datetime
 
-Usage:
-  python ws_send_pdf.py ws://127.0.0.1:9000 D:\path\to\temp_pdf
-"""
+# this piece of code simualtes the websocket server in the backend
 
-import sys
-import os
-import asyncio
-import websockets
-from datetime import datetime
+SAVE_DIR = "./ws_received"  # folder where incoming PDFs will be saved
+os.makedirs(SAVE_DIR, exist_ok=True)
 
-LOG_PATH = os.path.join(os.path.dirname(__file__), "ws_send_log.txt")
-
-def log(msg: str):
-    print(msg)
-    with open(LOG_PATH, "a", encoding="utf-8") as f:
-        f.write(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {msg}\n")
-
-async def send_file(ws_url: str, pdf_path: str):
+async def handle(ws):
+    print("Client connected")
     try:
-        async with websockets.connect(ws_url, max_size=None) as ws:
-            with open(pdf_path, "rb") as f:
-                data = f.read()
-            await ws.send(data)
-            log(f"Sent {os.path.basename(pdf_path)} ({len(data)} bytes)")
+        data = await ws.recv()
+        ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_path = os.path.join(SAVE_DIR, f"received_{ts}.pdf")
 
-            try:
-                reply = await asyncio.wait_for(ws.recv(), timeout=3)
-                log(f"Server replied: {reply}")
-            except asyncio.TimeoutError:
-                log("No reply from server (timeout)")
-
-        os.remove(pdf_path)
-        log(f"Deleted local file: {pdf_path}")
-
+        file_path = os.path.normpath(file_path).replace("\\", "/")
+        with open(file_path, "wb") as f:
+            f.write(data)
+        print(f"Saved {file_path} ({len(data)} bytes)")
+        await ws.send("OK")
     except Exception as e:
-        log(f"ERROR sending {pdf_path}: {e}")
+        print("Error:", e)
+    finally:
+        await ws.close()
 
 async def main():
-    if len(sys.argv) < 3:
-        log("Usage: python ws_send_pdf.py <ws_url> <folder_path>")
-        return
-
-    ws_url = sys.argv[1]
-    folder = sys.argv[2]
-
-    if not os.path.isdir(folder):
-        log(f"ERROR: Folder not found: {folder}")
-        return
-
-    pdf_files = [f for f in os.listdir(folder) if f.lower().endswith(".pdf")]
-    if not pdf_files:
-        log(f"No PDFs to send in {folder}")
-        return
-
-    log(f"Found {len(pdf_files)} PDFs in {folder}")
-
-    for fname in pdf_files:
-        pdf_path = os.path.join(folder, fname)
-        await send_file(ws_url, pdf_path)
-
-    log("All pending PDFs processed.")
+    async with websockets.serve(handle, "127.0.0.1", 9000, max_size=None):
+        print("WebSocket server running on ws://127.0.0.1:9000")
+        await asyncio.Future()  # run forever
 
 if __name__ == "__main__":
     asyncio.run(main())
