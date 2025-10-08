@@ -31,6 +31,11 @@ Private Sub EnsureFolder(path$)
     On Error GoTo 0
 End Sub
 
+Private Function Quote$(ByVal s$)
+    Quote = """" & s & """"
+End Function
+
+' === MAIN ROUTINE ===
 Sub ExportAndSendPDF()
     On Error GoTo Oops
 
@@ -52,7 +57,7 @@ Sub ExportAndSendPDF()
         filterName = "writer_pdf_Export"
     End If
 
-    ' Build PDF file path
+    ' Build PDF path
     Dim pdfPath$, pdfUrl$
     pdfPath = PDF_EXPORT_DIR & "\" & SafeTitle(doc.Title) & "_" & NowStamp() & ".pdf"
     pdfUrl = ConvertToURL(pdfPath)
@@ -62,21 +67,20 @@ Sub ExportAndSendPDF()
     doc.storeToURL pdfUrl, args()
 
     ' === Build final command for CMD ===
-    ' === Execute with visible console & logging ===
-    Dim logPath$
+    Dim cmd$, logPath$
     logPath = BASE_PATH & "\ws_send_log_from_macro.txt"
 
     cmd = "cmd /k ""cd /d """ & BASE_PATH & """ && """ & PYTHON_EXE & """ ws_send_pdf.py """ & WS_URL & """ """ & PDF_EXPORT_DIR & """ >> """ & logPath & """ 2>&1"""
 
-    Shell cmd, 1  ' 1 = show console window (so you can see any errors)
+    ' Optional: small wait to ensure file flush
+    Wait 1000
 
-    MsgBox "Exported and sent: " & pdfPath, 64, "Done"
+    ' Execute visible (1 = show console)
+    Shell cmd, 1
+
+    MsgBox "Exported and sending: " & pdfPath, 64, "Done"
     Exit Sub
 
 Oops:
     MsgBox "Error " & Err & ": " & Error$, 16, "Export PDF"
 End Sub
-
-Private Function Quote$(ByVal s$)
-    Quote = """" & s & """"
-End Function
