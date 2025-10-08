@@ -2,7 +2,7 @@ Option Explicit
 
 ' === CONFIGURATION (edit these only if needed) ===
 Const BASE_PATH = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasability-test-main"
-Const PDF_EXPORT_DIR = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasability-test-main\ws_received"
+Const PDF_EXPORT_DIR = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasibility-test-main\ws_received"
 Const PYTHON_EXE = "C:\Users\Administrador\AppData\Local\Programs\Python\Python314\python.exe"  ' <-- update if your Python path differs
 ' ================================================
 
