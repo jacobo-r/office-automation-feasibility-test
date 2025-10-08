@@ -62,12 +62,6 @@ Sub ExportAndSendPDF()
     doc.storeToURL pdfUrl, args()
 
     ' === Build final command for CMD ===
-    Dim cmd$
-    cmd = "cmd /c ""cd /d """ & BASE_PATH & """ && """ & PYTHON_EXE & """ ws_send_pdf.py """ & WS_URL & """ """ & pdfPath & """"""
-
-    ' === Debug: show command before running (optional)
-    ' MsgBox "Running: " & cmd
-
     ' === Execute with visible console & logging ===
     Dim logPath$
     logPath = BASE_PATH & "\ws_send_log_from_macro.txt"
