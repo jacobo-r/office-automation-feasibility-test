@@ -61,16 +61,15 @@ Sub ExportAndSendPDF()
     args(0) = Prop("FilterName", filterName)
     doc.storeToURL pdfUrl, args()
 
-    ' Build Python command
-    Dim senderScript$, cmd$
-    senderScript = BASE_PATH & "\ws_send_pdf.py"
-    cmd = Quote(PYTHON_EXE) & " " & Quote(senderScript) & " " & Quote(WS_URL) & " " & Quote(pdfPath)
+    ' === Build final command for CMD ===
+    Dim cmd$
+    cmd = "cmd /c ""cd /d """ & BASE_PATH & """ && """ & PYTHON_EXE & """ ws_send_pdf.py """ & WS_URL & """ """ & pdfPath & """"""
 
-    ' For debugging: show what will run
+    ' === Debug: show command before running (optional)
     ' MsgBox "Running: " & cmd
 
-    ' Run it silently (remove “start …” if you want to see errors)
-    Shell "cmd /c " & cmd, 0
+    ' === Execute silently ===
+    Shell cmd, 0
 
     MsgBox "Exported and sent: " & pdfPath, 64, "Done"
     Exit Sub
