@@ -1,10 +1,11 @@
 Option Explicit
 
-' === CONFIGURATION (edit these only if needed) ===
-Const BASE_PATH = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasability-test-main"
-Const PDF_EXPORT_DIR = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasibility-test-main\ws_received"
-Const PYTHON_EXE = "C:\Users\Administrador\AppData\Local\Programs\Python\Python314\python.exe"  ' <-- update if your Python path differs
-' ================================================
+' === CONFIGURATION ===
+Const BASE_PATH = "D:\USUARIOS (NO BORRAR)\ADMINISTRADOR\Downloads\office-automation-feasibility-test-main"
+Const PDF_EXPORT_DIR = BASE_PATH & "\ws_received"
+Const PYTHON_EXE = "C:\Users\Administrador\AppData\Local\Programs\Python\Python312\python.exe"
+Const WS_URL = "ws://127.0.0.1:9000"
+' ======================
 
 Private Function Prop(ByVal n$, ByVal v As Variant) As com.sun.star.beans.PropertyValue
     Dim p As New com.sun.star.beans.PropertyValue
@@ -24,10 +25,15 @@ Private Function SafeTitle$(ByVal s$)
     SafeTitle = Replace(t, " ", "_")
 End Function
 
+Private Sub EnsureFolder(path$)
+    On Error Resume Next
+    MkDir path
+    On Error GoTo 0
+End Sub
+
 Sub ExportAndSendPDF()
     On Error GoTo Oops
 
-    ' === Ensure a document is open ===
     Dim doc As Object
     doc = ThisComponent
     If IsNull(doc) Then
@@ -35,7 +41,10 @@ Sub ExportAndSendPDF()
         Exit Sub
     End If
 
-    ' === Determine export filter ===
+    ' Ensure export folder exists
+    Call EnsureFolder(PDF_EXPORT_DIR)
+
+    ' Choose export filter
     Dim filterName$
     If doc.supportsService("com.sun.star.sheet.SpreadsheetDocument") Then
         filterName = "calc_pdf_Export"
@@ -43,7 +52,7 @@ Sub ExportAndSendPDF()
         filterName = "writer_pdf_Export"
     End If
 
-    ' === Build PDF path ===
+    ' Build PDF file path
     Dim pdfPath$, pdfUrl$
     pdfPath = PDF_EXPORT_DIR & "\" & SafeTitle(doc.Title) & "_" & NowStamp() & ".pdf"
     pdfUrl = ConvertToURL(pdfPath)
@@ -52,21 +61,22 @@ Sub ExportAndSendPDF()
     args(0) = Prop("FilterName", filterName)
     doc.storeToURL pdfUrl, args()
 
-    ' === Build Python sender command ===
-    Dim WS_URL$, senderScript$, cmd$
-    WS_URL = "ws://127.0.0.1:9000"
+    ' Build Python command
+    Dim senderScript$, cmd$
     senderScript = BASE_PATH & "\ws_send_pdf.py"
-
     cmd = Quote(PYTHON_EXE) & " " & Quote(senderScript) & " " & Quote(WS_URL) & " " & Quote(pdfPath)
 
-    ' === Run silently ===
-    Shell "cmd /c start ""SendPDF"" " & cmd, 0
+    ' For debugging: show what will run
+    ' MsgBox "Running: " & cmd
+
+    ' Run it silently (remove “start …” if you want to see errors)
+    Shell "cmd /c " & cmd, 0
 
     MsgBox "Exported and sent: " & pdfPath, 64, "Done"
     Exit Sub
 
 Oops:
-    MsgBox "Error: " & Err & " - " & Error$, 16, "Export PDF"
+    MsgBox "Error " & Err & ": " & Error$, 16, "Export PDF"
 End Sub
 
 Private Function Quote$(ByVal s$)
